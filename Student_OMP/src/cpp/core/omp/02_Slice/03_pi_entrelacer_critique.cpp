@@ -41,8 +41,30 @@ bool isPiOMPEntrelacerCritical_Ok(int n)
 
 double piOMPEntrelacerCritical(int n)
     {
-   //TODO
-    return -1;
+    const double DX = 1 / (double) n;
+    const int NB_THREAD = OmpTools::setAndGetNaturalGranularity();
+    double somme = 0;
+
+#pragma omp parallel
+	{
+	double sommeThread = 0;
+	const int TID = OmpTools::getTid();
+	int s = TID;
+	double xs;
+
+	while (s < n)
+	    {
+	    xs = s * DX;
+	    sommeThread += fpi(xs);
+	    s += NB_THREAD;
+	    }
+# pragma omp critical
+	    {
+	    somme += sommeThread;
+	    }
+	}
+
+    return somme * DX;
     }
 
 /*----------------------------------------------------------------------*\

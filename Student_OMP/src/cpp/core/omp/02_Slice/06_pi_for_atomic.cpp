@@ -10,8 +10,6 @@
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-
-
 /*--------------------------------------*\
  |*		Public			*|
  \*-------------------------------------*/
@@ -46,8 +44,18 @@ bool isPiOMPforAtomic_Ok(int n)
  */
 double piOMPforAtomic(int n)
     {
-   //TODO
-    return -1;
+    const double DX = 1 / (double) n;
+    double somme = 0;
+
+#pragma omp parallel for
+    for (int i = 0; i < n; i++)
+	{
+	double xi = i * DX;
+#pragma omp atomic
+	somme += fpi(xi);
+	}
+
+    return somme * DX;
     }
 
 /*----------------------------------------------------------------------*\

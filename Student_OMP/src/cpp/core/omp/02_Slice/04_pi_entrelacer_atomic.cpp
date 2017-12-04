@@ -10,7 +10,6 @@
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-
 /*--------------------------------------*\
  |*		Public			*|
  \*-------------------------------------*/
@@ -33,7 +32,7 @@ static double piOMPEntrelacerAtomic(int n);
 
 bool isPiOMPEntrelacerAtomic_Ok(int n)
     {
-    return isAlgoPI_OK(piOMPEntrelacerAtomic,  n, "Pi OMP Entrelacer atomic");
+    return isAlgoPI_OK(piOMPEntrelacerAtomic, n, "Pi OMP Entrelacer atomic");
     }
 
 /*--------------------------------------*\
@@ -45,8 +44,28 @@ bool isPiOMPEntrelacerAtomic_Ok(int n)
  */
 double piOMPEntrelacerAtomic(int n)
     {
-   // TODO
-    return -1;
+    const double DX = 1 / (double) n;
+    const int NB_THREAD = OmpTools::setAndGetNaturalGranularity();
+    double somme = 0;
+
+#pragma omp parallel
+	{
+	double sommeThread = 0;
+	const int TID = OmpTools::getTid();
+	int s = TID;
+	double xs;
+
+	while (s < n)
+	    {
+	    xs = s * DX;
+	    sommeThread += fpi(xs);
+	    s += NB_THREAD;
+	    }
+#pragma omp atomic
+	somme += sommeThread;
+	}
+
+    return somme * DX;
     }
 
 /*----------------------------------------------------------------------*\
