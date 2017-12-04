@@ -1,0 +1,1 @@
+/home/arc21/CUDA/toStudent/code/WCuda/Tuto_Cpp_Corriger//src/cpp/core/01_quadratique/Quadratique.h

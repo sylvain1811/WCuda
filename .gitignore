@@ -9,6 +9,7 @@
 # ---> Eclipse
 *.pydevproject
 .metadata
+.recommenders
 .gradle
 bin/
 tmp/
