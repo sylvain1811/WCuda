@@ -72,7 +72,18 @@ void Rippling::animationStep()
  */
 void Rippling::processForAutoOMP(uchar4* ptrTabPixels, uint w, uint h, const DomaineMath& domaineMath)
     {
-   // TODO
+
+    RipplingMath ripplingMath(h, w);
+
+#pragma omp parallel for
+    for (int i = 0; i < h; i++)
+	{
+	for (int j = 0; j < w; j++)
+	    {
+	    int s = IndiceTools::toS(w, i, j);
+	    ripplingMath.colorIJ(&ptrTabPixels[s], i, j, t);
+	    }
+	}
     }
 
 /**
@@ -81,9 +92,31 @@ void Rippling::processForAutoOMP(uchar4* ptrTabPixels, uint w, uint h, const Dom
  */
 void Rippling::processEntrelacementOMP(uchar4* ptrTabPixels, uint w, uint h, const DomaineMath& domaineMath)
     {
-   //TODO
-    }
+    RipplingMath ripplingMath(w, h);
 
+    const int WH = w * h;
+
+#pragma omp parallel
+	{
+	const int TID = OmpTools::getTid();
+	const int NB_THREAD = OmpTools::getNbThread();
+
+	int i;
+	int j;
+
+	int s = TID;
+
+	while (s < WH)
+	    {
+
+	    IndiceTools::toIJ(s, w, &i, &j);
+
+	    ripplingMath.colorIJ(&ptrTabPixels[s], i, j, t);
+
+	    s += NB_THREAD;
+	    }
+	}
+    }
 /*----------------------------------------------------------------------*\
  |*			End	 					*|
  \*---------------------------------------------------------------------*/

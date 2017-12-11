@@ -58,15 +58,23 @@ class RipplingMath
 	void f(int i, int j, float t, uchar* ptrlevelGris)
 	    {
 	    float result;
-	    dij(i,j,&result); // warning : dij return void. Ne peut pas etre "imbriquer dans une fonction"
+	    dij(i, j, &result); // warning : dij return void. Ne peut pas etre "imbriquer dans une fonction"
 
-	    result=result/10;
+	    result = result / 10;
 	    // TODO cf fonction math pdf
+
+	    float numerateur = cosf(result - t / 7);
+	    float denominateur = result + 1;
+
+	    *ptrlevelGris = 128 + 127 * (numerateur / denominateur);
 	    }
 
 	void dij(int i, int j, float* ptrResult)
 	    {
 	    //TODO cf fonction math pdf
+	    float fi = i - dim2;
+	    float fj = j - dim2;
+	    *ptrResult = sqrtf(fi * fi + fj * fj);
 	    }
 
 	/*--------------------------------------*\
