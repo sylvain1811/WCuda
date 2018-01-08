@@ -7,7 +7,6 @@
 #include "DomaineMath_CPU.h"
 using namespace cpu;
 
-
 /*----------------------------------------------------------------------*\
  |*			Declaration 					*|
  \*---------------------------------------------------------------------*/
@@ -60,7 +59,7 @@ Animable_I<uchar4>* DamierProvider::createAnimable(void)
 Image_I* DamierProvider::createImageGL(void)
     {
     ColorRGB_01 colorTexte(0, 0, 0); // black
-    return new ImageAnimable_RGBA_uchar4(createAnimable(),colorTexte);
+    return new ImageAnimable_RGBA_uchar4(createAnimable(), colorTexte);
     }
 
 /*--------------------------------------*\

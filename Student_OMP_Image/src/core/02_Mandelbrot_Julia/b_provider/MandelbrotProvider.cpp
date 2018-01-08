@@ -31,20 +31,31 @@ using namespace cpu;
  |*		Surcharge		*|
  \*-------------------------------------*/
 
-MandelbrotProvider::createAnimable(void)
+/**
+ * Override
+ */
+Animable_I<uchar4>* MandelbrotProvider::createAnimable(void)
     {
-    // TODO
-    DomaineMath domaineMath = DomaineMath(0, 0, 2 * PI, 2 * PI);
+    DomaineMath domaineMath = DomaineMath(-2.1, -1.3, 0.8, 1.3);
 
     // Animation;
-    float dt = 2 * PI / 800;
-    int n = 2;
+    float dt = 2;
+    int n = 12;
 
     // Dimension
-    int w = 16 * 32 * 2;
-    int h = 16 * 32;
+    int w = 16 * 80;
+    int h = 16 * 60;
 
     return new Mandelbrot(w, h, dt, n, domaineMath);
+    }
+
+/**
+ * Override
+ */
+Image_I* MandelbrotProvider::createImageGL(void)
+    {
+    ColorRGB_01 colorTexte(0, 0, 0); // black
+    return new ImageAnimable_RGBA_uchar4(createAnimable(), colorTexte);
     }
 
 /*--------------------------------------*\

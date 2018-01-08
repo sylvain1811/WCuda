@@ -61,7 +61,7 @@ class Mandelbrot: public Animable_I<uchar4>
 	 * 	- entrelacementOMP
 	 * 	- forAutoOMP
 	 */
-	void workPixel(uchar4* ptrColorIJ, int i, int j, const DomaineMath& domaineMath, DamierMath* ptrDamierMath);
+	void workPixel(uchar4* ptrColorIJ, int i, int j, const DomaineMath& domaineMath, MandelbrotMath* ptrMandelbrotMath);
 
 	/*--------------------------------------*\
 	|*		Attribut		*|

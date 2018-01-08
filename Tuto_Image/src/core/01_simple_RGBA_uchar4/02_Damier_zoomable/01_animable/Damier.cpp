@@ -32,7 +32,7 @@ using std::endl;
  \*-------------------------------------*/
 
 Damier::Damier(uint w, uint h, float dt, uint n, const DomaineMath& domaineMath) :
-	Animable_I<uchar4>(w, h, "Damier_OMP_rgba_uchar4",domaineMath), variateurAnimation(Interval<float>(0, 2 * PI), dt)
+	Animable_I<uchar4>(w, h, "Damier_OMP_rgba_uchar4", domaineMath), variateurAnimation(Interval<float>(0, 2 * PI), dt)
     {
     // Input
     this->n = n;
@@ -80,8 +80,7 @@ void Damier::processForAutoOMP(uchar4* ptrTabPixels, uint w, uint h, const Domai
 	    {
 	    // int s = i * W + j;
 	    int s = IndiceTools::toS(w, i, j);    // i[0,H[ j[0,W[  --> s[0,W*H[
-
-	    workPixel(&ptrTabPixels[s],i,j,domaineMath,&damierMath);
+	    workPixel(&ptrTabPixels[s], i, j, domaineMath, &damierMath);
 	    }
 	}
     }
@@ -108,7 +107,7 @@ void Damier::processEntrelacementOMP(uchar4* ptrTabPixels, uint w, uint h, const
 	    {
 	    IndiceTools::toIJ(s, w, &i, &j); // s[0,W*H[ --> i[0,H[ j[0,W[
 
-	    workPixel(&ptrTabPixels[s],i,j,domaineMath,&damierMath);
+	    workPixel(&ptrTabPixels[s], i, j, domaineMath, &damierMath);
 
 	    s += NB_THREAD;
 	    }
@@ -127,7 +126,7 @@ void Damier::processEntrelacementOMP(uchar4* ptrTabPixels, uint w, uint h, const
  * 	- entrelacementOMP
  * 	- forAutoOMP
  */
-void Damier::workPixel(uchar4* ptrColorIJ,int i, int j,const DomaineMath& domaineMath,DamierMath* ptrDamierMath)
+void Damier::workPixel(uchar4* ptrColorIJ, int i, int j, const DomaineMath& domaineMath, DamierMath* ptrDamierMath)
     {
     // (i,j) domaine ecran dans N2
     // (x,y) domaine math dans R2
@@ -136,9 +135,9 @@ void Damier::workPixel(uchar4* ptrColorIJ,int i, int j,const DomaineMath& domain
     double y;
     domaineMath.toXY(i, j, &x, &y); // fill (x,y) from (i,j)
 
-   // float t=variateurAnimation.get();
+    // float t=variateurAnimation.get();
 
-    ptrDamierMath->colorXY(ptrColorIJ,x, y, t); // in [01]
+    ptrDamierMath->colorXY(ptrColorIJ, x, y, t); // in [01]
     }
 
 /*----------------------------------------------------------------------*\
