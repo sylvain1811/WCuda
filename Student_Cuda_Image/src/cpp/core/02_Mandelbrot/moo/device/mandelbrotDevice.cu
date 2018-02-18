@@ -4,7 +4,7 @@
 
 #include "IndiceTools_GPU.h"
 
-#include "RipplingMath.h"
+#include "MandelbrotMath.h"
 using namespace gpu;
 
 // Attention : 	Choix du nom est impotant!
@@ -24,7 +24,7 @@ using namespace gpu;
  |*		Public			*|
  \*-------------------------------------*/
 
-__global__ void rippling(uchar4* ptrDevPixels, uint w, uint h, float t);
+__global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t);
 
 /*--------------------------------------*\
  |*		Private			*|
@@ -38,9 +38,9 @@ __global__ void rippling(uchar4* ptrDevPixels, uint w, uint h, float t);
  |*		Public			*|
  \*-------------------------------------*/
 
-__global__ void rippling(uchar4* ptrDevPixels, uint w, uint h, float t)
+__global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t)
     {
-    RipplingMath ripplingMath = RipplingMath(w, h);
+    MandelbrotMath mandelbrotMath = MandelbrotMath(n);
 
     const int TID = Indice2D::tid();
     const int NB_THREAD = Indice2D::nbThread();
@@ -57,7 +57,7 @@ __global__ void rippling(uchar4* ptrDevPixels, uint w, uint h, float t)
 
 	IndiceTools::toIJ(s, w, &i, &j);
 
-	ripplingMath.colorIJ(&ptrDevPixels[s], i, j, t);
+	workPixel(&ptrTabPixels[s], i, j, domaineMath, &mandelbrotMath, t);
 
 	s += NB_THREAD;
 	}
@@ -66,6 +66,18 @@ __global__ void rippling(uchar4* ptrDevPixels, uint w, uint h, float t)
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
+
+__global__ void Mandelbrot::workPixel(uchar4* ptrColorIJ, int i, int j, const DomaineMath& domaineMath, MandelbrotMath* ptrMandelbrotMath, float t)
+    {
+    // (i,j) domaine ecran dans N2
+    // (x,y) domaine math dans R2
+
+    double x;
+    double y;
+    domaineMath.toXY(i, j, &x, &y); // fill (x,y) from (i,j)
+
+    ptrMandelbrotMath->colorXY(ptrColorIJ, x, y, t); // in [01]
+    }
 
 /*----------------------------------------------------------------------*\
  |*			End	 					*|
