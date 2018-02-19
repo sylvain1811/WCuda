@@ -22,15 +22,14 @@ class MandelbrotMath
 
     public:
 
-	__device__
-	MandelbrotMath(uint n) :
+	__device__ MandelbrotMath(uint n) :
 		calibreur(Interval<float>(-1, 1), Interval<float>(0, 1))
 	    {
 	    this->n = n;
 	    }
 
 	__device__
-	virtual ~MandelbrotMath()
+	 virtual ~MandelbrotMath()
 	    {
 	    // Rien
 	    }
@@ -43,24 +42,27 @@ class MandelbrotMath
 	__device__
 	void colorXY(uchar4* ptrColor, float x, float y, float t)
 	    {
-	    float z = f(x, y, t);
+	    /*float z = f(x, y, t);
 
-	    if (z < 0)
-		{
-		ptrColor->z = 0;
-		ptrColor->x = 0;
-		ptrColor->y = 0;
-		}
-	    else
-		{
+	     if (z < 0)
+	     {
+	     ptrColor->z = 0;
+	     ptrColor->x = 0;
+	     ptrColor->y = 0;
+	     }
+	     else
+	     {
 
-		float hue01 = z;
-		//calibreur.calibrer(&hue01);
+	     float hue01 = z;
+	     //calibreur.calibrer(&hue01);
 
-		ColorTools::HSB_TO_RVB(hue01, ptrColor); // update color
-		}
-
+	     ColorTools::HSB_TO_RVB(hue01, ptrColor); // update color
+	     }
+	     */
 	    ptrColor->w = 255; // opaque
+	    ptrColor->z = 125;
+	    ptrColor->x = 125;
+	    ptrColor->y = 125;
 	    }
 
     private:

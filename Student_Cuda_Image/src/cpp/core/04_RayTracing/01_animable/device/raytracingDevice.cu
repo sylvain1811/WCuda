@@ -1,20 +1,16 @@
-#include <iostream>
-#include <stdlib.h>
-#include <string.h>
-
-#include "Device.h"
+#include "Indice2D.h"
 #include "cudaTools.h"
+#include "Device.h"
 
-#include "RipplingProvider.h"
-#include "MandelbrotProvider.h"
+#include "IndiceTools_GPU.h"
 
-#include "Settings_GPU.h"
-#include "Viewer_GPU.h"
+#include "RaytracingMath.h"
 using namespace gpu;
 
-using std::cout;
-using std::endl;
-using std::string;
+// Attention : 	Choix du nom est impotant!
+//		VagueDevice.cu et non Vague.cu
+// 		Dans ce dernier cas, probl�me de linkage, car le nom du .cu est le meme que le nom d'un .cpp (host)
+//		On a donc ajouter Device (ou n'importequoi) pour que les noms soient diff�rents!
 
 /*----------------------------------------------------------------------*\
  |*			Declaration 					*|
@@ -28,7 +24,7 @@ using std::string;
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainImage(Settings& settings);
+__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t);
 
 /*--------------------------------------*\
  |*		Private			*|
@@ -42,25 +38,29 @@ int mainImage(Settings& settings);
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainImage(Settings& settings)
+__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t)
     {
-    cout << "\n[Image] mode" << endl;
+    RaytracingMath raytracingMath = RaytracingMath(w, h);
 
-    GLUTImageViewers::init(settings.getArgc(), settings.getArgv()); //only once
+    const int TID = Indice2D::tid();
+    const int NB_THREAD = Indice2D::nbThread();
+    const int WH = w * h;
 
-    // ImageOption : (boolean,boolean) : (isSelection ,isAnimation,isOverlay,isShowHelp)
-    ImageOption zoomable(true,true,false,true);
-    ImageOption nozoomable(false,true,false,true);
+    // TODO pattern entrelacement
+    int i;
+    int j;
 
-    Viewer<RipplingProvider> rippling(nozoomable, 0, 0); // imageOption px py
-    //Viewer<MandelbrotProvider> mandelbrot(nozoomable, 0, 0); // imageOption px py
+    int s = TID;
 
-    // Common
-    GLUTImageViewers::runALL(); // Bloquant, Tant qu'une fenetre est ouverte
+    while (s < WH)
+	{
 
-    cout << "\n[Image] end" << endl;
+	IndiceTools::toIJ(s, w, &i, &j);
 
-    return EXIT_SUCCESS;
+	raytracingMath.colorIJ(&ptrDevPixels[s], i, j, t);
+
+	s += NB_THREAD;
+	}
     }
 
 /*--------------------------------------*\

@@ -1,20 +1,8 @@
-#include <iostream>
-#include <stdlib.h>
-#include <string.h>
+#include "RaytracingProvider.h"
+#include "Raytracing.h"
 
-#include "Device.h"
-#include "cudaTools.h"
-
-#include "RipplingProvider.h"
-#include "MandelbrotProvider.h"
-
-#include "Settings_GPU.h"
-#include "Viewer_GPU.h"
-using namespace gpu;
-
-using std::cout;
-using std::endl;
-using std::string;
+#include "MathTools.h"
+#include "Grid.h"
 
 /*----------------------------------------------------------------------*\
  |*			Declaration 					*|
@@ -28,8 +16,6 @@ using std::string;
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainImage(Settings& settings);
-
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
@@ -42,25 +28,37 @@ int mainImage(Settings& settings);
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainImage(Settings& settings)
+/**
+ * Override
+ */
+Animable_I<uchar4>* RaytracingProvider::createAnimable()
     {
-    cout << "\n[Image] mode" << endl;
+    // Animation;
+    float dt = 2 * PI / 10;
 
-    GLUTImageViewers::init(settings.getArgc(), settings.getArgv()); //only once
+    // Dimension
+    int w = 16 * 60;
+    int h = 16 * 60;
 
-    // ImageOption : (boolean,boolean) : (isSelection ,isAnimation,isOverlay,isShowHelp)
-    ImageOption zoomable(true,true,false,true);
-    ImageOption nozoomable(false,true,false,true);
+    // Grid Cuda
+    int mp = Device::getMPCount();
+    int coreMP = Device::getCoreCountMP();
 
-    Viewer<RipplingProvider> rippling(nozoomable, 0, 0); // imageOption px py
-    //Viewer<MandelbrotProvider> mandelbrot(nozoomable, 0, 0); // imageOption px py
+    dim3 dg = dim3(mp, 2, 1);
+    dim3 db = dim3(coreMP,2,1);
 
-    // Common
-    GLUTImageViewers::runALL(); // Bloquant, Tant qu'une fenetre est ouverte
+    Grid grid(dg, db);  // TODO definissez une grille cuda (dg, db)
 
-    cout << "\n[Image] end" << endl;
+    return new Raytracing(grid, w, h, dt);
+    }
 
-    return EXIT_SUCCESS;
+/**
+ * Override
+ */
+Image_I* RaytracingProvider::createImageGL(void)
+    {
+    ColorRGB_01 colorTexte(0, 1, 0); // Green
+    return new ImageAnimable_RGBA_uchar4(createAnimable(), colorTexte);
     }
 
 /*--------------------------------------*\
@@ -70,4 +68,3 @@ int mainImage(Settings& settings)
 /*----------------------------------------------------------------------*\
  |*			End	 					*|
  \*---------------------------------------------------------------------*/
-

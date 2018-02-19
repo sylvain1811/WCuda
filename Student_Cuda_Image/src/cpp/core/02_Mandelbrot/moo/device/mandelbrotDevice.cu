@@ -1,10 +1,10 @@
-#include "Indice2D.h"
-#include "cudaTools.h"
-#include "Device.h"
+#include <cudaTools.h>
+#include <DomaineMath_GPU.h>
+#include <Indice2D.h>
+#include <IndiceTools_GPU.h>
 
-#include "IndiceTools_GPU.h"
+#include "math/MandelbrotMath.h"
 
-#include "MandelbrotMath.h"
 using namespace gpu;
 
 // Attention : 	Choix du nom est impotant!
@@ -24,7 +24,8 @@ using namespace gpu;
  |*		Public			*|
  \*-------------------------------------*/
 
-__global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t);
+__global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t, uint n, DomaineMath domaineMath);
+__global__ void workPixel(uchar4* ptrColorIJ, int i, int j, DomaineMath domaineMath, MandelbrotMath* ptrMandelbrotMath, float t);
 
 /*--------------------------------------*\
  |*		Private			*|
@@ -38,7 +39,7 @@ __global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t);
  |*		Public			*|
  \*-------------------------------------*/
 
-__global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t)
+__global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t, uint n, DomaineMath domaineMath)
     {
     MandelbrotMath mandelbrotMath = MandelbrotMath(n);
 
@@ -57,7 +58,13 @@ __global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t)
 
 	IndiceTools::toIJ(s, w, &i, &j);
 
-	workPixel(&ptrTabPixels[s], i, j, domaineMath, &mandelbrotMath, t);
+	//workPixel<<<>>>(&ptrDevPixels[s], i, j, domaineMath, &mandelbrotMath, t);
+
+	double x;
+	double y;
+	domaineMath.toXY(i, j, &x, &y); // fill (x,y) from (i,j)
+
+	(&mandelbrotMath)->colorXY(&ptrDevPixels[s], x, y, t); // in [01]
 
 	s += NB_THREAD;
 	}
@@ -67,7 +74,7 @@ __global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t)
  |*		Private			*|
  \*-------------------------------------*/
 
-__global__ void Mandelbrot::workPixel(uchar4* ptrColorIJ, int i, int j, const DomaineMath& domaineMath, MandelbrotMath* ptrMandelbrotMath, float t)
+__global__ void workPixel(uchar4* ptrColorIJ, int i, int j, const DomaineMath& domaineMath, MandelbrotMath* ptrMandelbrotMath, float t)
     {
     // (i,j) domaine ecran dans N2
     // (x,y) domaine math dans R2

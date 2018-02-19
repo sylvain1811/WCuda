@@ -4,7 +4,8 @@
 #include <assert.h>
 
 #include "Device.h"
-
+using gpu::DomaineMath;
+using namespace gpu;
 /*----------------------------------------------------------------------*\
  |*			Declaration 					*|
  \*---------------------------------------------------------------------*/
@@ -13,7 +14,7 @@
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-extern __global__ void mandelbrot(uchar4* ptrDevPixels,uint w, uint h,float t);
+extern __global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t, uint n, const DomaineMath& domaineMath);
 
 /*--------------------------------------*\
  |*		Public			*|
@@ -32,7 +33,7 @@ extern __global__ void mandelbrot(uchar4* ptrDevPixels,uint w, uint h,float t);
  \*-------------------------------------*/
 
 Mandelbrot::Mandelbrot(const Grid& grid, uint w, uint h, float dt, uint n, const DomaineMath& domaineMath) :
-	Animable_I<uchar4>(w, h, "Mandelbrot_CUDA", domaineMath), variateurAnimation(Interval<float>(20, 120), dt)
+	Animable_I<uchar4>(grid, w, h, "Mandelbrot_CUDA", domaineMath), variateurAnimation(Interval<float>(20, 120), dt)
     {
     // Input
     this->n = n;
@@ -59,16 +60,16 @@ void Mandelbrot::animationStep()
  |*		Private			*|
  \*-------------------------------------*/
 
-void Mandelbrot::process(uchar4* ptrTabPixels, uint w, uint h, const DomaineMath& domaineMath)
+void Mandelbrot::process(uchar4* ptrDevPixels, uint w, uint h, const DomaineMath& domaineMath)
     {
-    Device::lastCudaError("rippling rgba uchar4 (before kernel)"); // facultatif, for debug only, remove for release
+    Device::lastCudaError("Mandelbrot rgba uchar4 (before kernel)"); // facultatif, for debug only, remove for release
 
     // TODO lancer le kernel avec <<<dg,db>>>
     // le kernel est importer ci-dessus (ligne 19)
 
-    mandelbrot<<<dg,db>>>(ptrDevPixels, w,h,t);
+    mandelbrot<<<dg,db>>>(ptrDevPixels, w,h,t, n, domaineMath);
 
-    Device::lastCudaError("rippling rgba uchar4 (after kernel)"); // facultatif, for debug only, remove for release
+    Device::lastCudaError("Mandelbrot rgba uchar4 (after kernel)"); // facultatif, for debug only, remove for release
     }
 
 /*----------------------------------------------------------------------*\
