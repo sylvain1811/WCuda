@@ -16,7 +16,7 @@ using std::endl;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-extern __global__ void raytracing(uchar4* ptrDevPixels,uint w, uint h,float t, Sphere* ptrDevTabSphere);
+extern __global__ void raytracing(uchar4* ptrDevPixels,uint w, uint h,float t,int nbSphere, Sphere* ptrDevTabSphere);
 
 /*--------------------------------------*\
  |*		Public			*|
@@ -87,7 +87,7 @@ void Raytracing::process(uchar4* ptrDevPixels, uint w, uint h, const DomaineMath
     // TODO lancer le kernel avec <<<dg,db>>>
     // le kernel est importer ci-dessus (ligne 19)
 
-    raytracing<<<dg,db>>>(ptrDevPixels, w,h,t, ptrDevTabSphere);
+    raytracing<<<dg,db>>>(ptrDevPixels, w,h,t, n, ptrDevTabSphere);
 
     Device::lastCudaError("Raytracing rgba uchar4 (after kernel)"); // facultatif, for debug only, remove for release
     }
