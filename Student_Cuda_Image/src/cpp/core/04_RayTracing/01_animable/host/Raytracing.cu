@@ -16,7 +16,7 @@ using std::endl;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-extern __global__ void raytracing(uchar4* ptrDevPixels,uint w, uint h,float t);
+extern __global__ void raytracing(uchar4* ptrDevPixels,uint w, uint h,float t, Sphere* ptrDevTabSphere);
 
 /*--------------------------------------*\
  |*		Public			*|
@@ -41,18 +41,33 @@ extern __global__ void raytracing(uchar4* ptrDevPixels,uint w, uint h,float t);
 Raytracing::Raytracing(const Grid& grid, uint w, uint h, float dt) :
 	Animable_I<uchar4>(grid, w, h, "Raytracing_Cuda_RGBA_uchar4")
     {
-    assert(w == h); // specific rippling
+    n = 10;
+
+    assert(w == h);
 
     // Inputs
     this->dt = dt;
 
     // Tools
     this->t = 0; // protected dans Animable
+
+    sphereCreator = new SphereCreator(n, w, h);
+    ptrTabSphere = sphereCreator->getTabSphere();
+
+    sizeOctet = n * sizeof(Sphere);
+
+    // Alloc
+    Device::malloc(&ptrDevTabSphere, sizeOctet);
+
+    // Copy
+    Device::memcpyHToD(ptrDevTabSphere, ptrTabSphere, sizeOctet);
     }
 
 Raytracing::~Raytracing()
     {
-    // rien
+    // Free
+    Device::free(ptrDevTabSphere);
+    delete sphereCreator;
     }
 
 /*-------------------------*\
@@ -65,14 +80,14 @@ Raytracing::~Raytracing()
  *
  * Note : domaineMath pas use car pas zoomable
  */
-void Raytracing::process(uchar4* ptrDevPixels, uint w, uint h)
+void Raytracing::process(uchar4* ptrDevPixels, uint w, uint h, const DomaineMath& domaineMath)
     {
     Device::lastCudaError("Raytracing rgba uchar4 (before kernel)"); // facultatif, for debug only, remove for release
 
     // TODO lancer le kernel avec <<<dg,db>>>
     // le kernel est importer ci-dessus (ligne 19)
 
-    raytracing<<<dg,db>>>(ptrDevPixels, w,h,t);
+    raytracing<<<dg,db>>>(ptrDevPixels, w,h,t, ptrDevTabSphere);
 
     Device::lastCudaError("Raytracing rgba uchar4 (after kernel)"); // facultatif, for debug only, remove for release
     }

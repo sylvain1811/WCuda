@@ -30,7 +30,7 @@ extern __global__ void addVector(float* ptrDevV1, float* ptrDevV2, float* ptrDev
  \*---------------------------------------------------------------------*/
 
 /*--------------------------------------*\
- |*		Constructeur			*|
+ |*		Constructeur		*|
  \*-------------------------------------*/
 
 AddVector::AddVector(const Grid& grid, float* ptrV1, float* ptrV2, float* ptrW, int n) :

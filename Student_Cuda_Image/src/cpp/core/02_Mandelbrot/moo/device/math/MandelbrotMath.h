@@ -42,7 +42,7 @@ class MandelbrotMath
 	__device__
 	void colorXY(uchar4* ptrColor, float x, float y, float t)
 	    {
-	    /*float z = f(x, y, t);
+	    float z = f(x, y, t);
 
 	     if (z < 0)
 	     {
@@ -58,11 +58,11 @@ class MandelbrotMath
 
 	     ColorTools::HSB_TO_RVB(hue01, ptrColor); // update color
 	     }
-	     */
+
 	    ptrColor->w = 255; // opaque
-	    ptrColor->z = 125;
-	    ptrColor->x = 125;
-	    ptrColor->y = 125;
+//	    ptrColor->z = 125;
+//	    ptrColor->x = 125;
+//	    ptrColor->y = 125;
 	    }
 
     private:

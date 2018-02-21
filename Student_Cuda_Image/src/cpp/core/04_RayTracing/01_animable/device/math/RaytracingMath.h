@@ -3,6 +3,8 @@
 #include <math.h>
 #include "MathTools.h"
 
+#include "cudaTools.h"
+#include "Calibreur_GPU.h"
 #include "ColorTools_GPU.h"
 using namespace gpu;
 

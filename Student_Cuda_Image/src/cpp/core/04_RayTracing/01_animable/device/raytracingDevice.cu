@@ -24,7 +24,7 @@ using namespace gpu;
  |*		Public			*|
  \*-------------------------------------*/
 
-__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t);
+__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t, Sphere* ptrDevTabSphere);
 
 /*--------------------------------------*\
  |*		Private			*|
@@ -38,7 +38,7 @@ __global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t);
  |*		Public			*|
  \*-------------------------------------*/
 
-__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t)
+__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t, Sphere* ptrDevTabSphere)
     {
     RaytracingMath raytracingMath = RaytracingMath(w, h);
 

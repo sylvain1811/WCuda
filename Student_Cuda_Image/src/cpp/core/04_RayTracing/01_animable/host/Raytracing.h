@@ -1,5 +1,6 @@
 #pragma once
 
+#include "RaytracingMath.h"
 #include "cudaTools.h"
 #include "MathTools.h"
 
@@ -38,7 +39,7 @@ class Raytracing: public Animable_I<uchar4>
 	/**
 	 * Call periodicly by the api
 	 */
-	virtual void process(uchar4* ptrDevPixels, uint w, uint h);
+	virtual void process(uchar4* ptrDevPixels, uint w, uint h, const DomaineMath& domaineMath);
 
 	/**
 	 * Call periodicly by the api
@@ -50,6 +51,16 @@ class Raytracing: public Animable_I<uchar4>
 	 \*-------------------------------------*/
 
     private:
+
+	SphereCreator* sphereCreator;
+
+	Sphere* ptrTabSphere;
+
+	Sphere* ptrDevTabSphere;
+
+	size_t sizeOctet;
+
+	int n;
 
 	// Inputs
 	float dt;

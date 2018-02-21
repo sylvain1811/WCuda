@@ -14,7 +14,7 @@ using namespace gpu;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-extern __global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t, uint n, const DomaineMath& domaineMath);
+extern __global__ void mandelbrot(uchar4* ptrDevPixels, uint w, uint h, float t, uint n, DomaineMath domaineMath);
 
 /*--------------------------------------*\
  |*		Public			*|
