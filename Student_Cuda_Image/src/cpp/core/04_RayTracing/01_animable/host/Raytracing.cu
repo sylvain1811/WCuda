@@ -41,7 +41,7 @@ extern __global__ void raytracing(uchar4* ptrDevPixels,uint w, uint h,float t,in
 Raytracing::Raytracing(const Grid& grid, uint w, uint h, float dt) :
 	Animable_I<uchar4>(grid, w, h, "Raytracing_Cuda_RGBA_uchar4")
     {
-    n = 10;
+    n = 400;
 
     assert(w == h);
 

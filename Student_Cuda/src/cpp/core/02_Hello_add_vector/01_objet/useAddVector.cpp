@@ -53,7 +53,7 @@ bool useAddVecteur()
 	dim3 db = dim3(coreMP, 2, 1);   	// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
 	Grid grid(dg, db);
 
-	// 1 à 1 : PAS POSSIBLE DE TROUVER LE DG DB OPTIMAL
+	// pattern 1 à 1 : PAS POSSIBLE DE TROUVER LE DG DB OPTIMAL
 //	dim3 dg = dim3(3, 1, 1);  		// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
 //	dim3 db = dim3(3, 1, 1);   	// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
 //	Grid grid(dg, db);

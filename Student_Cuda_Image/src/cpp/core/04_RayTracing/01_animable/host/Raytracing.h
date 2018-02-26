@@ -4,6 +4,8 @@
 #include "cudaTools.h"
 #include "MathTools.h"
 
+#include "SphereCreator.h"
+
 #include "Animable_I_GPU.h"
 using namespace gpu;
 
