@@ -46,7 +46,7 @@ __global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t, int nb
     const int NB_THREAD = Indice2D::nbThread();
     const int WH = w * h;
 
-    // TODO pattern entrelacement
+    // Pattern entrelacement
     int i;
     int j;
 

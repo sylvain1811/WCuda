@@ -54,19 +54,15 @@ class Raytracing: public Animable_I<uchar4>
 
     private:
 
+	// Tools
 	SphereCreator* sphereCreator;
-
 	Sphere* ptrTabSphere;
-
 	Sphere* ptrDevTabSphere;
-
 	size_t sizeOctet;
-
 	int n;
 
 	// Inputs
 	float dt;
-
     };
 
 /*----------------------------------------------------------------------*\

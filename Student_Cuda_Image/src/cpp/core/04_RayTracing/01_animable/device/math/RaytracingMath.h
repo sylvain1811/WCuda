@@ -50,7 +50,7 @@ class RaytracingMath
 	    float distanceMin = 9999999.f;
 	    Sphere* sphereLaPlusProche = 0;
 	    float keepedDz = 0.f;
-	    float2 xysol = make_float2(j, i);
+	    float2 xysol = make_float2(i, j);
 
 	    for (int index = 0; index < nbSphere; index++)
 		{
@@ -88,7 +88,7 @@ class RaytracingMath
     private:
 
 	/*--------------------------------------*\
-	|*		Attribut			*|
+	|*		Attribut		*|
 	 \*-------------------------------------*/
 
     private:

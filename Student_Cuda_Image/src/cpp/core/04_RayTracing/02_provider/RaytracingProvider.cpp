@@ -47,7 +47,7 @@ Animable_I<uchar4>* RaytracingProvider::createAnimable()
     dim3 dg = dim3(mp, 2, 1);
     dim3 db = dim3(coreMP,2,1);
 
-    Grid grid(dg, db);  // TODO definissez une grille cuda (dg, db)
+    Grid grid(dg, db);  // definir une grille cuda (dg, db)
 
     return new Raytracing(grid, w, h, dt);
     }

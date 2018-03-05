@@ -41,7 +41,7 @@ extern __global__ void raytracing(uchar4* ptrDevPixels,uint w, uint h,float t,in
 Raytracing::Raytracing(const Grid& grid, uint w, uint h, float dt) :
 	Animable_I<uchar4>(grid, w, h, "Raytracing_Cuda_RGBA_uchar4")
     {
-    n = 5000;
+    n = 400;
 
     assert(w == h);
 
@@ -49,7 +49,7 @@ Raytracing::Raytracing(const Grid& grid, uint w, uint h, float dt) :
     this->dt = dt;
 
     // Tools
-    this->t = 0; // protected dans Animable
+    this->t = 0.0f; // protected dans Animable
 
     sphereCreator = new SphereCreator(n, w, h);
     ptrTabSphere = sphereCreator->getTabSphere();
@@ -84,7 +84,7 @@ void Raytracing::process(uchar4* ptrDevPixels, uint w, uint h, const DomaineMath
     {
     Device::lastCudaError("Raytracing rgba uchar4 (before kernel)"); // facultatif, for debug only, remove for release
 
-    // TODO lancer le kernel avec <<<dg,db>>>
+    // lancer le kernel avec <<<dg,db>>>
     // le kernel est importer ci-dessus (ligne 19)
 
     raytracing<<<dg,db>>>(ptrDevPixels, w,h,t, n, ptrDevTabSphere);
