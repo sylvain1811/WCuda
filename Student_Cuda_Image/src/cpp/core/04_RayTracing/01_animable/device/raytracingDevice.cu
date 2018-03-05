@@ -3,6 +3,7 @@
 #include "Device.h"
 
 #include "IndiceTools_GPU.h"
+#include "nbSphere.h"
 
 #include "RaytracingMath.h"
 using namespace gpu;
@@ -16,6 +17,8 @@ using namespace gpu;
  |*			Declaration 					*|
  \*---------------------------------------------------------------------*/
 
+__constant__ Sphere TAB_SPHERE_CM[NB_SPHERE];
+
 /*--------------------------------------*\
  |*		Imported	 	*|
  \*-------------------------------------*/
@@ -25,10 +28,14 @@ using namespace gpu;
  \*-------------------------------------*/
 
 __global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t, int nbSphere, Sphere* ptrDevTabSphere);
+__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t);
+__host__ void uploadToGPU(Sphere* ptrTabSphere, size_t sizeOctet);
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
+
+static __device__ void work(uchar4* ptrDevPixels, uint w, uint h, float t, int nbSphere, Sphere* ptrDevTabSphere);
 
 /*----------------------------------------------------------------------*\
  |*			Implementation 					*|
@@ -38,7 +45,27 @@ __global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t, int nb
  |*		Public			*|
  \*-------------------------------------*/
 
+__host__ void uploadToGPU(Sphere* ptrTabSphere, size_t sizeOctet)
+    {
+    //Device::memcpyToCM(TAB_SPHERE_CM, ptrTabSphere, sizeOctet);
+    cudaMemcpyToSymbol(TAB_SPHERE_CM, ptrTabSphere, sizeOctet, 0, cudaMemcpyHostToDevice);
+    }
+
+__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t)
+    {
+    work(ptrDevPixels, w, h, t, NB_SPHERE, TAB_SPHERE_CM);
+    }
+
 __global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t, int nbSphere, Sphere* ptrDevTabSphere)
+    {
+    work(ptrDevPixels, w, h, t, nbSphere, ptrDevTabSphere);
+    }
+
+/*--------------------------------------*\
+ |*		Private			*|
+ \*-------------------------------------*/
+
+static __device__ void work(uchar4* ptrDevPixels, uint w, uint h, float t, int nbSphere, Sphere* ptrDevTabSphere)
     {
     RaytracingMath raytracingMath = RaytracingMath(w, h, nbSphere, ptrDevTabSphere);
 
@@ -62,10 +89,6 @@ __global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t, int nb
 	s += NB_THREAD;
 	}
     }
-
-/*--------------------------------------*\
- |*		Private			*|
- \*-------------------------------------*/
 
 /*----------------------------------------------------------------------*\
  |*			End	 					*|

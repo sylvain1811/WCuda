@@ -34,7 +34,7 @@
 Animable_I<uchar4>* RaytracingProvider::createAnimable()
     {
     // Animation;
-    float dt = 2 * PI / 10;
+    float dt = PI/250.0f;
 
     // Dimension
     int w = 16 * 60;
