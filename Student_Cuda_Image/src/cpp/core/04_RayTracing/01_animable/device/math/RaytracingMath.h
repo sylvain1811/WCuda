@@ -76,9 +76,9 @@ class RaytracingMath
 		}
 	    else
 		{
-		ptrColorIJ->x = 125;
-		ptrColorIJ->y = 125;
-		ptrColorIJ->z = 125;
+		ptrColorIJ->x = 0;
+		ptrColorIJ->y = 0;
+		ptrColorIJ->z = 0;
 		}
 
 	    // opaque

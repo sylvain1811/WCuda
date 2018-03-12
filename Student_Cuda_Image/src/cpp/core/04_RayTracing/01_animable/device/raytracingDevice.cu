@@ -27,8 +27,8 @@ __constant__ Sphere TAB_SPHERE_CM[NB_SPHERE];
  |*		Public			*|
  \*-------------------------------------*/
 
-__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t, int nbSphere, Sphere* ptrDevTabSphere);
-__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t);
+__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t, int nbSphere, Sphere* ptrDevTabSphere); // GM
+__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t); // CM
 __host__ void uploadToGPU(Sphere* ptrTabSphere, size_t sizeOctet);
 
 /*--------------------------------------*\
@@ -45,20 +45,44 @@ static __device__ void work(uchar4* ptrDevPixels, uint w, uint h, float t, int n
  |*		Public			*|
  \*-------------------------------------*/
 
+// SM
+__device__ void copyGMtoSM(Sphere* tabSM, Sphere* tabGM, int n)
+    {
+    const int NB_THREAD_LOCAL = Indice2D::nbThreadLocal();
+    const int TID_LOCAL = Indice2D::tidLocal();
+    int s = TID_LOCAL;
+    while (s < n)
+	{
+	tabSM[s] = tabGM[s];
+	s += NB_THREAD_LOCAL;
+	}
+    }
+
+// CM
 __host__ void uploadToGPU(Sphere* ptrTabSphere, size_t sizeOctet)
     {
     //Device::memcpyToCM(TAB_SPHERE_CM, ptrTabSphere, sizeOctet);
     cudaMemcpyToSymbol(TAB_SPHERE_CM, ptrTabSphere, sizeOctet, 0, cudaMemcpyHostToDevice);
     }
 
-__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t)
+__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t) // CM
     {
     work(ptrDevPixels, w, h, t, NB_SPHERE, TAB_SPHERE_CM);
     }
 
-__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t, int nbSphere, Sphere* ptrDevTabSphere)
+__global__ void raytracing(uchar4* ptrDevPixels, uint w, uint h, float t, int nbSphere, Sphere* ptrDevTabSphere) // GM & SM
     {
-    work(ptrDevPixels, w, h, t, nbSphere, ptrDevTabSphere);
+    //GM
+	{
+	//work(ptrDevPixels, w, h, t, nbSphere, ptrDevTabSphere); // GM
+	}
+    // SM
+	{
+	__shared__ extern Sphere tabSM[];
+	copyGMtoSM(tabSM, ptrDevTabSphere, nbSphere);
+	__syncthreads();
+	work(ptrDevPixels, w, h, t, nbSphere, tabSM); // SM
+	}
     }
 
 /*--------------------------------------*\
