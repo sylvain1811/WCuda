@@ -1,9 +1,4 @@
-#include <iostream>
-#include <stdlib.h>
-
-
-using std::cout;
-using std::endl;
+#include "Indice2D.h"
 
 /*----------------------------------------------------------------------*\
  |*			Declaration 					*|
@@ -13,21 +8,15 @@ using std::endl;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-extern bool useHello(void);
-extern bool useAddVecteur(void);
-extern bool useSlice(void);
-
 /*--------------------------------------*\
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore();
+__global__ void slice(int n, float* ptrTabGM);
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
-
 
 /*----------------------------------------------------------------------*\
  |*			Implementation 					*|
@@ -37,26 +26,24 @@ int mainCore();
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore()
+__global__ void slice(int n, float* ptrTabGM)
     {
-    bool isOk = true;
-    isOk &= useHello();
-    isOk &= useAddVecteur();
-    isOk &= useSlice();
+    const int TID = Indice2D::tid();
+    const int NB_THREAD = Indice2D::nbThread();
+    int s = TID;
 
-    cout << "\nisOK = " << isOk << endl;
-    cout << "\nEnd : mainCore" << endl;
-
-    return isOk ? EXIT_SUCCESS : EXIT_FAILURE;
+    while (s < n)
+	{
+	float xi = s / (float) n;
+	ptrTabGM[s] = 4 / (1 + xi * xi);
+	s += NB_THREAD;
+	}
     }
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
 
-
-
 /*----------------------------------------------------------------------*\
  |*			End	 					*|
  \*---------------------------------------------------------------------*/
-

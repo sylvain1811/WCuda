@@ -1,33 +1,19 @@
-#include <iostream>
-#include <stdlib.h>
-
-
-using std::cout;
-using std::endl;
+#include "Slice.h"
+#include "Device.h"
 
 /*----------------------------------------------------------------------*\
  |*			Declaration 					*|
  \*---------------------------------------------------------------------*/
 
 /*--------------------------------------*\
- |*		Imported	 	*|
- \*-------------------------------------*/
-
-extern bool useHello(void);
-extern bool useAddVecteur(void);
-extern bool useSlice(void);
-
-/*--------------------------------------*\
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore();
+extern __global__ void slice(int n, float* ptrTabGM);
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
-
 
 /*----------------------------------------------------------------------*\
  |*			Implementation 					*|
@@ -37,24 +23,49 @@ int mainCore();
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore()
+Slice::Slice(int n, const Grid& grid)
     {
-    bool isOk = true;
-    isOk &= useHello();
-    isOk &= useAddVecteur();
-    isOk &= useSlice();
+    this->n = n;
+    this->grid = grid;
+    this->sizeTab = n * sizeof(float);
+    this->ptrTab = new float[sizeTab];
+    this->pi = 0.0;
 
-    cout << "\nisOK = " << isOk << endl;
-    cout << "\nEnd : mainCore" << endl;
-
-    return isOk ? EXIT_SUCCESS : EXIT_FAILURE;
+    // MM
+    Device::malloc(&ptrTabGM, sizeTab);
     }
 
+Slice::~Slice()
+    {
+    Device::free(ptrTabGM);
+    delete[] ptrTab;
+    }
+
+float Slice::getPi()
+    {
+    return this->pi;
+    }
+
+void Slice::run()
+    {
+    slice<<<grid.dg, grid.db>>>(n, ptrTabGM);
+
+    Device::memcpyDToH(ptrTab, ptrTabGM, sizeTab);
+
+    int i = 0;
+    float sum = 0;
+
+#pragma omp parallel for reduction(+:sum)
+    for (i = 0; i < n; i++)
+	{
+	sum += ptrTab[i];
+	}
+
+    pi = sum / (float) n;
+    }
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
-
 
 /*----------------------------------------------------------------------*\
  |*			End	 					*|
