@@ -33,7 +33,7 @@
  */
 Animable_I<uchar4>* MandelbrotProvider::createAnimable(void)
     {
-    DomaineMath domaineMath = DomaineMath(-2.1, -1.3, 0.8, 1.3);
+    DomaineMath domaineMath = DomaineMath(x0, y0, x1, y1);
 
     // Animation;
     float dt = 2;
