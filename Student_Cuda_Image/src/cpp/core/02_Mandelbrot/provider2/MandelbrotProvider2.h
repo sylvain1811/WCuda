@@ -13,10 +13,10 @@ using namespace gpu;
  |*		Public			*|
  \*-------------------------------------*/
 
-class MandelbrotProvider: public Provider_I<uchar4>
+class MandelbrotProvider2: public Provider_I<uchar4>
     {
     public:
-	virtual ~MandelbrotProvider()
+	virtual ~MandelbrotProvider2()
 	    {
 	    //Rien
 	    }

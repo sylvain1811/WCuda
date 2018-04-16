@@ -1,9 +1,7 @@
 #pragma once
 
 #include "cudaTools.h"
-#include "Provider_I_GPU.h"
-
-using namespace gpu;
+#include "Grid.h"
 
 /*----------------------------------------------------------------------*\
  |*			Declaration 					*|
@@ -13,22 +11,26 @@ using namespace gpu;
  |*		Public			*|
  \*-------------------------------------*/
 
-class MandelbrotProvider: public Provider_I<uchar4>
+class SliceAd
     {
     public:
-	virtual ~MandelbrotProvider()
-	    {
-	    //Rien
-	    }
 
-	/*--------------------------------------*\
-	 |*		Override		*|
-	 \*-------------------------------------*/
+	SliceAd(int n, const Grid& grid);
+	~SliceAd();
+	void run();
+	float getPi();
 
-	Animable_I<uchar4>* createAnimable(void);
+    private:
 
-	Image_I* createImageGL(void);
+	// Inputs
+	int n;
+	Grid grid;
 
+	// Outputs
+	float pi;
+
+	// Tools
+	float* ptrResultGM;
     };
 
 /*----------------------------------------------------------------------*\

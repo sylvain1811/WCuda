@@ -1,34 +1,20 @@
-#include <iostream>
-#include <stdlib.h>
+#include "SliceAd.h"
 
-
-using std::cout;
-using std::endl;
+#include "Device.h"
 
 /*----------------------------------------------------------------------*\
  |*			Declaration 					*|
  \*---------------------------------------------------------------------*/
 
 /*--------------------------------------*\
- |*		Imported	 	*|
- \*-------------------------------------*/
-
-extern bool useHello(void);
-extern bool useAddVecteur(void);
-extern bool useSlice(void);
-extern bool useSliceAd(void);
-
-/*--------------------------------------*\
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore();
+extern __global__ void sliceAd(int n, float* ptrTabGM);
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
-
 
 /*----------------------------------------------------------------------*\
  |*			Implementation 					*|
@@ -38,25 +24,36 @@ int mainCore();
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore()
+SliceAd::SliceAd(int n, const Grid& grid)
     {
-    bool isOk = true;
-    //isOk &= useHello();
-    //isOk &= useAddVecteur();
-    //isOk &= useSlice();
-    isOk &= useSliceAd();
+    this->n = n;
+    this->grid = grid;
+    this->pi = 0.0;
 
-    cout << "\nisOK = " << isOk << endl;
-    cout << "\nEnd : mainCore" << endl;
-
-    return isOk ? EXIT_SUCCESS : EXIT_FAILURE;
+    // MM
+    Device::malloc(&ptrResultGM, sizeof(pi));
     }
 
+SliceAd::~SliceAd()
+    {
+    Device::free(ptrResultGM);
+    }
+
+float SliceAd::getPi()
+    {
+    return this->pi;
+    }
+
+void SliceAd::run()
+    {
+    sliceAd<<<grid.dg, grid.db, 1024*sizeof(float)>>>(n, ptrResultGM);
+
+    Device::memcpyDToH(&pi, ptrResultGM, sizeof(float));
+    pi = pi / n;
+    }
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
-
 
 /*----------------------------------------------------------------------*\
  |*			End	 					*|

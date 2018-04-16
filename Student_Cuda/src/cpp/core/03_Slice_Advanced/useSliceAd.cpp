@@ -1,6 +1,6 @@
 #include <iostream>
-#include <stdlib.h>
-
+#include "Grid.h"
+#include "Device.h"
 
 using std::cout;
 using std::endl;
@@ -13,22 +13,17 @@ using std::endl;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-extern bool useHello(void);
-extern bool useAddVecteur(void);
-extern bool useSlice(void);
-extern bool useSliceAd(void);
+#include "SliceAd.h"
 
 /*--------------------------------------*\
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore();
+bool useSliceAd(void);
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
-
 
 /*----------------------------------------------------------------------*\
  |*			Implementation 					*|
@@ -38,25 +33,31 @@ int mainCore();
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore()
+bool useSliceAd()
     {
-    bool isOk = true;
-    //isOk &= useHello();
-    //isOk &= useAddVecteur();
-    //isOk &= useSlice();
-    isOk &= useSliceAd();
+    int n = 10000;
 
-    cout << "\nisOK = " << isOk << endl;
-    cout << "\nEnd : mainCore" << endl;
+    // Partie interessante GPGPU
+	{
+	// Grid cuda
+	int mp = Device::getMPCount();
+	int coreMP = Device::getCoreCountMP();
 
-    return isOk ? EXIT_SUCCESS : EXIT_FAILURE;
+	// Entrelacement
+	dim3 dg = dim3(mp, 1, 1);  		// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
+	dim3 db = dim3(1024, 1, 1);   	// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
+	Grid grid(dg, db);
+
+	SliceAd slice(n, grid); // on passe la grille à Slice pour pouvoir facilement la faire varier de l'extérieur (ici) pour trouver l'optimum
+	slice.run();
+	cout << "Slice PI : " << slice.getPi();
+	}
+    return true;
     }
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
-
 
 /*----------------------------------------------------------------------*\
  |*			End	 					*|

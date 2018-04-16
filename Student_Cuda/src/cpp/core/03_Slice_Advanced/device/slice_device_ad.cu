@@ -1,9 +1,5 @@
-#include <iostream>
-#include <stdlib.h>
-
-
-using std::cout;
-using std::endl;
+#include "Indice2D.h"
+#include "reductionADD.h"
 
 /*----------------------------------------------------------------------*\
  |*			Declaration 					*|
@@ -13,22 +9,15 @@ using std::endl;
  |*		Imported	 	*|
  \*-------------------------------------*/
 
-extern bool useHello(void);
-extern bool useAddVecteur(void);
-extern bool useSlice(void);
-extern bool useSliceAd(void);
-
 /*--------------------------------------*\
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore();
+__global__ void sliceAd(int n, float* ptrResultGM);
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
-
-
 
 /*----------------------------------------------------------------------*\
  |*			Implementation 					*|
@@ -38,27 +27,34 @@ int mainCore();
  |*		Public			*|
  \*-------------------------------------*/
 
-int mainCore()
+__global__ void sliceAd(int n, float* ptrResultGM)
     {
-    bool isOk = true;
-    //isOk &= useHello();
-    //isOk &= useAddVecteur();
-    //isOk &= useSlice();
-    isOk &= useSliceAd();
 
-    cout << "\nisOK = " << isOk << endl;
-    cout << "\nEnd : mainCore" << endl;
+    extern __shared__ float tabSM[];
 
-    return isOk ? EXIT_SUCCESS : EXIT_FAILURE;
+    // Reduction intra thread
+    const int TID = Indice2D::tid();
+    const int NB_THREAD = Indice2D::nbThread();
+    const int TID_Local = Indice2D::tidLocal();
+
+    int s = TID;
+    tabSM[TID_Local] = 0.0;
+
+    while (s < n)
+	{
+	float xi = s / (float) n;
+	tabSM[TID_Local] += 4 / (1 + xi * xi);
+	s += NB_THREAD;
+	}
+
+    // Reduction intra block et interblock
+    reductionADD(tabSM, ptrResultGM);
     }
 
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/
 
-
-
 /*----------------------------------------------------------------------*\
  |*			End	 					*|
  \*---------------------------------------------------------------------*/
-
