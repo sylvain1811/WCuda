@@ -35,17 +35,22 @@ __global__ void sliceAd(int n, float* ptrResultGM)
     // Reduction intra thread
     const int TID = Indice2D::tid();
     const int NB_THREAD = Indice2D::nbThread();
-    const int TID_Local = Indice2D::tidLocal();
+    const int TID_LOCAL = Indice2D::tidLocal();
 
     int s = TID;
-    tabSM[TID_Local] = 0.0;
+    float sum = 0.0;
+    float xi;
 
     while (s < n)
 	{
-	float xi = s / (float) n;
-	tabSM[TID_Local] += 4 / (1 + xi * xi);
+	xi = s / (float) n;
+	sum += 4 / (1 + xi * xi);
 	s += NB_THREAD;
 	}
+
+    tabSM[TID_LOCAL] = sum;
+
+    __syncthreads();
 
     // Reduction intra block et interblock
     reductionADD(tabSM, ptrResultGM);

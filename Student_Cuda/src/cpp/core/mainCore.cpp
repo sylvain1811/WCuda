@@ -43,7 +43,7 @@ int mainCore()
     bool isOk = true;
     //isOk &= useHello();
     //isOk &= useAddVecteur();
-    //isOk &= useSlice();
+    isOk &= useSlice();
     isOk &= useSliceAd();
 
     cout << "\nisOK = " << isOk << endl;

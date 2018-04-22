@@ -32,12 +32,17 @@ __global__ void slice(int n, float* ptrTabGM)
     const int NB_THREAD = Indice2D::nbThread();
     int s = TID;
 
+    float sum = 0.0;
+    float xi;
+
     while (s < n)
 	{
-	float xi = s / (float) n;
-	ptrTabGM[s] = 4 / (1 + xi * xi);
+	xi = s / (float) n;
+	sum += 4 / (1 + xi * xi);
 	s += NB_THREAD;
 	}
+
+    ptrTabGM[TID] = sum;
     }
 
 /*--------------------------------------*\

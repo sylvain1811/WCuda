@@ -35,7 +35,7 @@ bool useSliceAd(void);
 
 bool useSliceAd()
     {
-    int n = 10000;
+    int n = 100000000;
 
     // Partie interessante GPGPU
 	{
@@ -50,7 +50,7 @@ bool useSliceAd()
 
 	SliceAd slice(n, grid); // on passe la grille à Slice pour pouvoir facilement la faire varier de l'extérieur (ici) pour trouver l'optimum
 	slice.run();
-	cout << "Slice PI : " << slice.getPi();
+	cout << "Slice PI ad : " << slice.getPi() << endl;
 	}
     return true;
     }

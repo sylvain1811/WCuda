@@ -32,6 +32,7 @@ SliceAd::SliceAd(int n, const Grid& grid)
 
     // MM
     Device::malloc(&ptrResultGM, sizeof(pi));
+    Device::memclear(ptrResultGM, sizeof(pi));
     }
 
 SliceAd::~SliceAd()
@@ -47,9 +48,8 @@ float SliceAd::getPi()
 void SliceAd::run()
     {
     sliceAd<<<grid.dg, grid.db, 1024*sizeof(float)>>>(n, ptrResultGM);
-
     Device::memcpyDToH(&pi, ptrResultGM, sizeof(float));
-    pi = pi / n;
+    pi = pi / (float)n;
     }
 /*--------------------------------------*\
  |*		Private			*|

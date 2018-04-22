@@ -35,7 +35,7 @@ bool useSlice(void);
 
 bool useSlice()
     {
-    int n = 10000;
+    int n = 100000000;
 
     // Partie interessante GPGPU
 	{
@@ -45,12 +45,12 @@ bool useSlice()
 
 	// Entrelacement
 	dim3 dg = dim3(mp, 2, 1);  		// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
-	dim3 db = dim3(coreMP, 2, 1);   	// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
+	dim3 db = dim3(coreMP, 3, 1);   	// disons, a optimiser selon le gpu, peut drastiqument ameliorer ou baisser les performances
 	Grid grid(dg, db);
 
 	Slice slice(n, grid); // on passe la grille à Slice pour pouvoir facilement la faire varier de l'extérieur (ici) pour trouver l'optimum
 	slice.run();
-	cout << "Slice PI : " << slice.getPi();
+	cout << "Slice PI : " << slice.getPi() << endl;
 	}
     return true;
     }

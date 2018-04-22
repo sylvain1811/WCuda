@@ -28,7 +28,7 @@ Slice::Slice(int n, const Grid& grid)
     this->n = n;
     this->grid = grid;
     this->sizeTab = n * sizeof(float);
-    this->ptrTab = new float[sizeTab];
+    this->ptrTab = new float[n];
     this->pi = 0.0;
 
     // MM
@@ -53,7 +53,7 @@ void Slice::run()
     Device::memcpyDToH(ptrTab, ptrTabGM, sizeTab);
 
     int i = 0;
-    float sum = 0;
+    float sum = 0.0;
 
 #pragma omp parallel for reduction(+:sum)
     for (i = 0; i < n; i++)
