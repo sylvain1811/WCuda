@@ -17,6 +17,7 @@ extern bool useHello(void);
 extern bool useAddVecteur(void);
 extern bool useSlice(void);
 extern bool useSliceAd(void);
+extern bool useMontecarlo(void);
 
 /*--------------------------------------*\
  |*		Public			*|
@@ -45,6 +46,7 @@ int mainCore()
     //isOk &= useAddVecteur();
     isOk &= useSlice();
     isOk &= useSliceAd();
+    isOk &= useMontecarlo();
 
     cout << "\nisOK = " << isOk << endl;
     cout << "\nEnd : mainCore" << endl;

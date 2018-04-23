@@ -35,7 +35,7 @@ bool useSlice(void);
 
 bool useSlice()
     {
-    int n = 100000000;
+    int n = 100000;
 
     // Partie interessante GPGPU
 	{
