@@ -19,6 +19,7 @@ class Montecarlo
 	Montecarlo(int n, const Grid& grid);
 	~Montecarlo();
 	float getPi();
+	int getN0();
 	void run();
 
     private:
@@ -29,9 +30,10 @@ class Montecarlo
 
 	// Outputs
 	float pi;
+	int n0;
 
 	// Tools
-	float* ptrResultGM;
+	int* ptrResultGM;
 	curandState* tabDevGeneratorGM;
 	size_t sizeTabGenerator;
     };

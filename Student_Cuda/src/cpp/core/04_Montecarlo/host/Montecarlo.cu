@@ -9,7 +9,7 @@
  |*		Public			*|
  \*-------------------------------------*/
 
-extern __global__ void montecarlo(curandState* tabDevGeneratorGM, int n, float* ptrResultGM);
+extern __global__ void montecarlo(curandState* tabDevGeneratorGM, int n, int* ptrResultGM);
 extern __global__ void createGenerator(curandState* tabDevGeneratorGM, int deviceId);
 
 /*--------------------------------------*\
@@ -32,8 +32,8 @@ Montecarlo::Montecarlo(int n, const Grid& grid)
     this->sizeTabGenerator = grid.threadCounts() * sizeof(curandState);
 
     // MM
-    Device::malloc(&ptrResultGM, sizeof(pi));
-    Device::memclear(ptrResultGM, sizeof(pi));
+    Device::malloc(&ptrResultGM, sizeof(n0));
+    Device::memclear(ptrResultGM, sizeof(n0));
     Device::malloc(&tabDevGeneratorGM, sizeTabGenerator);
 
     // Init generator
@@ -51,16 +51,22 @@ Device::free(ptrResultGM);
 void Montecarlo::run()
 {
 int nPerThread = n / grid.threadCounts();
-montecarlo<<<grid.dg, grid.db, 1024*sizeof(float)>>>(tabDevGeneratorGM, nPerThread, ptrResultGM);
+montecarlo<<<grid.dg, grid.db, 1024*sizeof(int)>>>(tabDevGeneratorGM, nPerThread, ptrResultGM);
 
-Device::memcpyDToH(&pi, ptrResultGM, sizeof(float));
-pi = 2 * 4 * pi / (float) n;
+Device::memcpyDToH(&n0, ptrResultGM, sizeof(int));
+pi = 2 * 2 * 2 * n0 / (float) (nPerThread * grid.threadCounts());
+}
+
+int Montecarlo::getN0()
+{
+return this->n0;
 }
 
 float Montecarlo::getPi()
 {
 return this->pi;
 }
+
 /*--------------------------------------*\
  |*		Private			*|
  \*-------------------------------------*/

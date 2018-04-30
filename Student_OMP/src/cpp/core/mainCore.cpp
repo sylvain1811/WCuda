@@ -26,7 +26,6 @@ int mainCore(void);
  |*		Private			*|
  \*-------------------------------------*/
 
-
 /*----------------------------------------------------------------------*\
  |*			Implementation 					*|
  \*---------------------------------------------------------------------*/
@@ -41,8 +40,8 @@ int mainCore(void)
     Chrono chrono;
     chrono.start();
 
-    isOk &= useHello();
-   isOk &= usePI();
+    //isOk &= useHello();
+    isOk &= usePI();
 
     cout << "\n-------------------------------------------------" << endl;
     cout << "End Main : isOk = " << isOk << endl;

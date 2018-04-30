@@ -1,1 +1,1 @@
-/home/arc21/CUDA/toStudent/code/WCuda/Tuto_Boost//src/cpp/core/boost/synchronization/SingletonBoost.h
+/home/arc21/CUDA/toStudent/code/WCuda/Tuto_Boost/src/cpp/core/boost/synchronization/SingletonBoost.h

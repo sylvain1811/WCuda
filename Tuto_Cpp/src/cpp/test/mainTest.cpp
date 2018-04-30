@@ -55,8 +55,8 @@ bool testAll()
     {
     Suite testSuite;
 
-    testSuite.add(auto_ptr < Suite > (new TestCalculatrice()));
-    testSuite.add(auto_ptr < Suite > (new TestHello()));
+    //testSuite.add(auto_ptr < Suite > (new TestCalculatrice()));
+    //testSuite.add(auto_ptr < Suite > (new TestHello()));
 
     //return runTestHtml("/outTest_HTML", testSuite);
     return runTestConsole("Test_Console", testSuite);

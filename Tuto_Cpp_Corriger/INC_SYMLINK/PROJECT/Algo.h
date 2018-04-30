@@ -1,1 +1,1 @@
-/home/arc21/CUDA/toStudent/code/WCuda/Tuto_Cpp_Corriger//src/cpp/core/02_heritage/base/Algo.h
+/home/arc21/CUDA/toStudent/code/WCuda/Tuto_Cpp_Corriger/src/cpp/core/02_heritage/base/Algo.h

@@ -15,7 +15,7 @@
  |*		Public			*|
  \*-------------------------------------*/
 
-extern __global__ void montecarlo(curandState* tabDevGeneratorGM, int n, float* ptrResultGM);
+extern __global__ void montecarlo(curandState* tabDevGeneratorGM, int n, int* ptrResultGM);
 extern __global__ void createGenerator(curandState* tabDevGeneratorGM, int deviceId);
 
 /*--------------------------------------*\
@@ -46,10 +46,10 @@ __global__ void createGenerator(curandState* tabDevGeneratorGM, int deviceId)
     curand_init(seed, sequenceNumber, offset, &tabDevGeneratorGM[TID]);
     }
 
-__global__ void montecarlo(curandState* tabDevGeneratorGM, int n, float* ptrResultGM)
+__global__ void montecarlo(curandState* tabDevGeneratorGM, int n, int* ptrResultGM)
     {
 
-    extern __shared__ float tabSM[];
+    extern __shared__ int tabSM[];
 
     // Reduction intra thread
     const int TID = Indice1D::tid();

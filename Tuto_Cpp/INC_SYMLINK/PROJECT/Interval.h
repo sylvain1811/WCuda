@@ -1,1 +1,1 @@
-/home/arc21/CUDA/toStudent/code/WCuda/Tuto_Cpp//src/cpp/core/06_template/Interval.h
+/home/arc21/CUDA/toStudent/code/WCuda/Tuto_Cpp/src/cpp/core/06_template/Interval.h
